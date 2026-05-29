@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "expense-tracker",
+      "runtimeExecutable": "C:\\Users\\CharusheelaIngale\\AppData\\Local\\node20\\node-v20.19.2-win-x64\\npm.cmd",
+      "runtimeArgs": ["run", "dev"],
+      "port": 3000
+    }
+  ]
+}
