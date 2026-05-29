@@ -4,16 +4,17 @@ import { formatDate } from './formatters';
 export function exportToCSV(expenses: Expense[], filename?: string): void {
   if (expenses.length === 0) return;
 
-  const headers = ['Date', 'Description', 'Category', 'Amount (USD)'];
+  // Column order: Date, Category, Amount, Description
+  const headers = ['Date', 'Category', 'Amount', 'Description'];
   const rows = expenses.map((e) => [
     formatDate(e.date),
-    `"${e.description.replace(/"/g, '""')}"`,
     e.category,
     e.amount.toFixed(2),
+    `"${e.description.replace(/"/g, '""')}"`,
   ]);
 
   const total = expenses.reduce((sum, e) => sum + e.amount, 0);
-  const totalRow = ['', 'TOTAL', '', total.toFixed(2)];
+  const totalRow = ['', 'TOTAL', total.toFixed(2), ''];
 
   const csvContent = [
     headers.join(','),

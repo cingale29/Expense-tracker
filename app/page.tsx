@@ -40,7 +40,7 @@ export default function DashboardPage() {
             disabled={expenses.length === 0}
             className="hidden sm:flex items-center gap-2 px-4 py-2.5 rounded-xl border border-gray-200 text-sm font-medium text-gray-600 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
           >
-            <Download size={15} /> Export CSV
+            <Download size={15} /> Export Data
           </button>
           <button
             onClick={() => setShowForm(true)}
