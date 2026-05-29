@@ -7,8 +7,8 @@ import ExpenseList from '@/components/ExpenseList';
 import ExpenseFilters from '@/components/ExpenseFilters';
 import ExpenseForm from '@/components/ExpenseForm';
 import DeleteConfirmModal from '@/components/DeleteConfirmModal';
+import ExportModal from '@/components/ExportModal';
 import { Expense, ExpenseFormData, ExpenseFiltersState } from '@/types';
-import { exportToCSV } from '@/utils/export';
 
 const defaultFilters: ExpenseFiltersState = {
   search: '',
@@ -25,6 +25,7 @@ export default function ExpensesPage() {
   const [editTarget, setEditTarget] = useState<Expense | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<Expense | null>(null);
   const [showAddForm, setShowAddForm] = useState(false);
+  const [showExportModal, setShowExportModal] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
 
   const filtered = filterExpenses(filters);
@@ -54,11 +55,6 @@ export default function ExpensesPage() {
     showToast('Expense deleted ✓');
   }
 
-  function handleExport() {
-    exportToCSV(filtered);
-    showToast('CSV exported ✓');
-  }
-
   return (
     <div className="px-4 md:px-8 py-6 max-w-6xl mx-auto">
       {/* Header */}
@@ -71,11 +67,11 @@ export default function ExpensesPage() {
         </div>
         <div className="flex items-center gap-2">
           <button
-            onClick={handleExport}
+            onClick={() => setShowExportModal(true)}
             disabled={filtered.length === 0}
             className="hidden sm:flex items-center gap-2 px-4 py-2.5 rounded-xl border border-gray-200 text-sm font-medium text-gray-600 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
           >
-            <Download size={15} /> Export CSV
+            <Download size={15} /> Export Data
           </button>
           <button
             onClick={() => setShowAddForm(true)}
@@ -134,6 +130,14 @@ export default function ExpensesPage() {
           description={deleteTarget.description}
           onConfirm={handleDelete}
           onClose={() => setDeleteTarget(null)}
+        />
+      )}
+
+      {/* Export modal */}
+      {showExportModal && (
+        <ExportModal
+          expenses={filtered}
+          onClose={() => setShowExportModal(false)}
         />
       )}
     </div>

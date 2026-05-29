@@ -8,12 +8,13 @@ import CategoryChart from '@/components/CategoryChart';
 import MonthlyChart from '@/components/MonthlyChart';
 import RecentTransactions from '@/components/RecentTransactions';
 import ExpenseForm from '@/components/ExpenseForm';
+import ExportModal from '@/components/ExportModal';
 import { ExpenseFormData } from '@/types';
-import { exportToCSV } from '@/utils/export';
 
 export default function DashboardPage() {
   const { expenses, isLoaded, addExpense } = useExpenses();
   const [showForm, setShowForm] = useState(false);
+  const [showExportModal, setShowExportModal] = useState(false);
 
   function handleSave(data: ExpenseFormData) {
     addExpense(data);
@@ -36,11 +37,11 @@ export default function DashboardPage() {
         </div>
         <div className="flex items-center gap-2">
           <button
-            onClick={() => exportToCSV(expenses)}
+            onClick={() => setShowExportModal(true)}
             disabled={expenses.length === 0}
             className="hidden sm:flex items-center gap-2 px-4 py-2.5 rounded-xl border border-gray-200 text-sm font-medium text-gray-600 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
           >
-            <Download size={15} /> Export CSV
+            <Download size={15} /> Export Data
           </button>
           <button
             onClick={() => setShowForm(true)}
@@ -83,6 +84,11 @@ export default function DashboardPage() {
       {/* Add expense modal */}
       {showForm && (
         <ExpenseForm onSave={handleSave} onClose={() => setShowForm(false)} />
+      )}
+
+      {/* Export modal */}
+      {showExportModal && (
+        <ExportModal expenses={expenses} onClose={() => setShowExportModal(false)} />
       )}
     </div>
   );
