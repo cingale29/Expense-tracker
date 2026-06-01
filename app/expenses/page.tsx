@@ -1,14 +1,14 @@
 'use client';
 
 import { useState } from 'react';
-import { Plus, Download } from 'lucide-react';
+import { Plus, Zap } from 'lucide-react';
 import { useExpenses } from '@/hooks/useExpenses';
 import ExpenseList from '@/components/ExpenseList';
 import ExpenseFilters from '@/components/ExpenseFilters';
 import ExpenseForm from '@/components/ExpenseForm';
 import DeleteConfirmModal from '@/components/DeleteConfirmModal';
+import CloudExportModal from '@/components/CloudExportModal';
 import { Expense, ExpenseFormData, ExpenseFiltersState } from '@/types';
-import { exportToCSV } from '@/utils/export';
 
 const defaultFilters: ExpenseFiltersState = {
   search: '',
@@ -24,7 +24,8 @@ export default function ExpensesPage() {
   const [filters, setFilters] = useState<ExpenseFiltersState>(defaultFilters);
   const [editTarget, setEditTarget] = useState<Expense | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<Expense | null>(null);
-  const [showAddForm, setShowAddForm] = useState(false);
+  const [showAddForm, setShowAddForm]       = useState(false);
+  const [showCloudExport, setShowCloudExport] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
 
   const filtered = filterExpenses(filters);
@@ -54,11 +55,6 @@ export default function ExpensesPage() {
     showToast('Expense deleted ✓');
   }
 
-  function handleExport() {
-    exportToCSV(filtered);
-    showToast('CSV exported ✓');
-  }
-
   return (
     <div className="px-4 md:px-8 py-6 max-w-6xl mx-auto">
       {/* Header */}
@@ -71,11 +67,11 @@ export default function ExpensesPage() {
         </div>
         <div className="flex items-center gap-2">
           <button
-            onClick={handleExport}
+            onClick={() => setShowCloudExport(true)}
             disabled={filtered.length === 0}
-            className="hidden sm:flex items-center gap-2 px-4 py-2.5 rounded-xl border border-gray-200 text-sm font-medium text-gray-600 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+            className="hidden sm:flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 text-white text-sm font-semibold hover:opacity-90 disabled:opacity-40 disabled:cursor-not-allowed transition-opacity shadow-sm"
           >
-            <Download size={15} /> Export CSV
+            <Zap size={15} /> Cloud Export
           </button>
           <button
             onClick={() => setShowAddForm(true)}
@@ -134,6 +130,14 @@ export default function ExpensesPage() {
           description={deleteTarget.description}
           onConfirm={handleDelete}
           onClose={() => setDeleteTarget(null)}
+        />
+      )}
+
+      {/* Cloud Export modal */}
+      {showCloudExport && (
+        <CloudExportModal
+          expenses={filtered}
+          onClose={() => setShowCloudExport(false)}
         />
       )}
     </div>

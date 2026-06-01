@@ -1,19 +1,20 @@
 'use client';
 
 import { useState } from 'react';
-import { Plus, Download } from 'lucide-react';
+import { Plus, Zap } from 'lucide-react';
 import { useExpenses } from '@/hooks/useExpenses';
 import SummaryCards from '@/components/SummaryCards';
 import CategoryChart from '@/components/CategoryChart';
 import MonthlyChart from '@/components/MonthlyChart';
 import RecentTransactions from '@/components/RecentTransactions';
 import ExpenseForm from '@/components/ExpenseForm';
+import CloudExportModal from '@/components/CloudExportModal';
 import { ExpenseFormData } from '@/types';
-import { exportToCSV } from '@/utils/export';
 
 export default function DashboardPage() {
   const { expenses, isLoaded, addExpense } = useExpenses();
-  const [showForm, setShowForm] = useState(false);
+  const [showForm, setShowForm]             = useState(false);
+  const [showCloudExport, setShowCloudExport] = useState(false);
 
   function handleSave(data: ExpenseFormData) {
     addExpense(data);
@@ -36,11 +37,11 @@ export default function DashboardPage() {
         </div>
         <div className="flex items-center gap-2">
           <button
-            onClick={() => exportToCSV(expenses)}
+            onClick={() => setShowCloudExport(true)}
             disabled={expenses.length === 0}
-            className="hidden sm:flex items-center gap-2 px-4 py-2.5 rounded-xl border border-gray-200 text-sm font-medium text-gray-600 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+            className="hidden sm:flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 text-white text-sm font-semibold hover:opacity-90 disabled:opacity-40 disabled:cursor-not-allowed transition-opacity shadow-sm"
           >
-            <Download size={15} /> Export CSV
+            <Zap size={15} /> Cloud Export
           </button>
           <button
             onClick={() => setShowForm(true)}
@@ -83,6 +84,11 @@ export default function DashboardPage() {
       {/* Add expense modal */}
       {showForm && (
         <ExpenseForm onSave={handleSave} onClose={() => setShowForm(false)} />
+      )}
+
+      {/* Cloud Export modal */}
+      {showCloudExport && (
+        <CloudExportModal expenses={expenses} onClose={() => setShowCloudExport(false)} />
       )}
     </div>
   );
